@@ -3,14 +3,18 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         // Получаем массив с данными для расчета вида [0, 0, значение знака, значение системы]
         int[] exampleArraysAfterCheck = checkInput(inputFromConsole());
         // Проверена система и найден знак
         System.out.println("Массив для расчета - "+Arrays.toString(exampleArraysAfterCheck));
         // Запускаем массив в метод расчета
         String preEndSolution = solutionOfExample(exampleArraysAfterCheck);
-        System.out.println(preEndSolution);
+        if((exampleArraysAfterCheck[3] == 2) && (Integer.parseInt(preEndSolution) < 1)){
+            System.out.println("exampleArraysAfterCheck[3] == 2 --- "+exampleArraysAfterCheck[3]);
+            throw new Exception("Выражение с использованием римских цифр не может быть отрицательным");
+        }
+        System.out.println("16 "+preEndSolution);
         String endSolution = null;
         if(exampleArraysAfterCheck[3] == 2){
             // Запускаем метод конвертации из арабских в римские числа
@@ -74,6 +78,7 @@ public class Main {
         return exampleArraysAfterCheck;
     }
 
+    // Метод определения системы (арабская или римская)
     static int[] findRimOrArab(String[] stringFirst) {
         // Создаем массив на 4 значения для передачи значений дальше для решения
         int[] exampleArrays = new int[] {0, 0, 0, 0};
@@ -142,41 +147,36 @@ public class Main {
         return exampleArrays;
     }
 
+    // Метод проверки на римские/арабские цифры
     static int[] checkArrayOnSystem(int[] exampleArraysAfterCheck, String inputFromUser) throws Exception {
         int[] exampleAfterAOS = exampleArraysAfterCheck;
         int signInt = exampleArraysAfterCheck[2];
         System.out.println(signInt);
         String signString = null;
-        if(signInt == 1){
-            signString = "\\+";
-        }
-        else if(signInt == 2){
-            signString = "-";
-        }
-        else if(signInt == 3){
-            signString = "\\*";
-        }
-        else if(signInt == 4){
-            signString = "/";
-        }
-        System.out.println("awdawdawdawdawdawdawddw"+Arrays.toString(exampleArraysAfterCheck));
-        String[] arrayOfSummond = inputFromUser.split(signString);
-        System.out.println("arrayOfSummond"+Arrays.toString(arrayOfSummond));
-        System.out.println(arrayOfSummond[0]);
-        System.out.println(arrayOfSummond[1]);
-        int check = exampleArraysAfterCheck[3];
-        if(check == 1){
-            System.out.println("Используются только арабские цифры, передаем массив дальше");
-            exampleArraysAfterCheck[0] = Integer.parseInt(arrayOfSummond[0]);
-            exampleArraysAfterCheck[1] = Integer.parseInt(arrayOfSummond[1]);
-            System.out.println("Массив в подсчет - "+Arrays.toString(exampleArraysAfterCheck));
-        }else if(check == 2){
-            System.out.println("Используются только римские цифры, передаем массив на конвертацию в арабские цифры");
-            System.out.println("Массив римских цифр для конвертации - "+Arrays.toString(arrayOfSummond));
-            // метод конвертации
-            int[] converted = convertRimToArab(arrayOfSummond);
-            exampleArraysAfterCheck[0] = converted[0];
-            exampleArraysAfterCheck[1] = converted[1];
+        if(signInt == 1) signString = "\\+";
+        else if(signInt == 2) signString = "-";
+        else if(signInt == 3) signString = "\\*";
+        else if(signInt == 4) signString = "/";
+        try{
+            System.out.println("awdawdawdawdawdawdawddw"+Arrays.toString(exampleArraysAfterCheck));
+            String[] arrayOfSummond = inputFromUser.split(signString);
+            System.out.println("arrayOfSummond"+Arrays.toString(arrayOfSummond));
+            int check = exampleArraysAfterCheck[3];
+            if(check == 1){
+                System.out.println("Используются только арабские цифры, передаем массив дальше");
+                exampleArraysAfterCheck[0] = Integer.parseInt(arrayOfSummond[0]);
+                exampleArraysAfterCheck[1] = Integer.parseInt(arrayOfSummond[1]);
+                System.out.println("Массив в подсчет - "+Arrays.toString(exampleArraysAfterCheck));
+            }else if(check == 2){
+                System.out.println("Используются только римские цифры, передаем массив на конвертацию в арабские цифры");
+                System.out.println("Массив римских цифр для конвертации - "+Arrays.toString(arrayOfSummond));
+                // вызов метода конвертации
+                int[] converted = convertRimToArab(arrayOfSummond);
+                exampleArraysAfterCheck[0] = converted[0];
+                exampleArraysAfterCheck[1] = converted[1];
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Неправильный формат ввода");
         }
         return exampleAfterAOS;
     }
@@ -216,18 +216,24 @@ public class Main {
     }
 
     // метод подсчета арабских цифр
-    static String solutionOfExample(int[] arraysEnd){
-        System.out.println(Arrays.toString(arraysEnd));
+    static String solutionOfExample(int[] arraysEnd) throws Exception {
+        System.out.println("метод подсчета арабских цифр --- "+Arrays.toString(arraysEnd));
         int a =  arraysEnd[0];
+        System.out.println("a --- "+a);
         int b =  arraysEnd[1];
+        System.out.println("b --- "+b);
         int c =  arraysEnd[2];
         int end = 0;
-        switch (c) {
-            case 1 -> end = a+b;
-            case 2 -> end = a-b;
-            case 3 -> end = a*b;
-            case 4 -> end = a/b;
-        }
+        if ((a<=10) && (a>=0)){
+            if ((b<=10) && (b>=0)){
+                switch (c) {
+                    case 1 -> end = a+b;
+                    case 2 -> end = a-b;
+                    case 3 -> end = a*b;
+                    case 4 -> end = a/b;
+                }
+            }else throw new Exception("Неподходящее значение знаменателя");
+        }else throw new Exception("Неподходящее значение знаменателя");
         return Integer.toString(end);
     }
 
@@ -255,7 +261,6 @@ public class Main {
         if (strAM == null) endString = decades;
         else endString = decades + strAM;
         System.out.println(preConvert+" "+endString+" ");
-
         return endString;
     }
 
