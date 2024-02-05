@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -6,15 +5,11 @@ public class Main {
     public static void main(String[] args) throws Exception {
         // Получаем массив с данными для расчета вида [0, 0, значение знака, значение системы]
         int[] exampleArraysAfterCheck = checkInput(inputFromConsole());
-        // Проверена система и найден знак
-        System.out.println("Массив для расчета - "+Arrays.toString(exampleArraysAfterCheck));
         // Запускаем массив в метод расчета
         String preEndSolution = solutionOfExample(exampleArraysAfterCheck);
         if((exampleArraysAfterCheck[3] == 2) && (Integer.parseInt(preEndSolution) < 1)){
-            System.out.println("exampleArraysAfterCheck[3] == 2 --- "+exampleArraysAfterCheck[3]);
             throw new Exception("Выражение с использованием римских цифр не может быть отрицательным");
         }
-        System.out.println("16 "+preEndSolution);
         String endSolution = null;
         if(exampleArraysAfterCheck[3] == 2){
             // Запускаем метод конвертации из арабских в римские числа
@@ -30,7 +25,7 @@ public class Main {
     static String inputFromConsole() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Введите числовое выражение арабскими (1,2,3...) " +
-                "или римскими (I,V,X...) цифрами.");
+                "или римскими (I,V,X) цифрами.");
         String inputFromUser = sc.nextLine();
         System.out.println("Вы ввели: " + inputFromUser);
         return inputFromUser;
@@ -40,35 +35,30 @@ public class Main {
     static int[] checkInput(String inputFromUser) {
         int[] exampleArraysAfterCheck = null;
         String[] stringFirst = inputFromUser.split(""); // Создаем массив по всем знакам из строки
-        System.out.println(stringFirst.getClass() + "awdawdawdawdad" + Arrays.toString(stringFirst));
         // делаем проверку на наличие и количество арифметических знаков
         try {
             int countSign = 0;  // создаем счетчик количества арифметических знаков
             for (String st : stringFirst) {
-                System.out.println("Проверяемый знак из массива - " + st);
                 Pattern pattern = Pattern.compile("[+\\-*/]");  // Ищем все арифметические знаки
                 boolean findSign = st.matches(String.valueOf(pattern));
-                System.out.println(findSign);
                 if (findSign) {     // Если есть знак, увеличиваем счетчик
                     countSign++;
-                    System.out.println("count - " + countSign);
-                } else {            // Если знака нет, продолжаем проверку
-                    System.out.println("Знак на этом этапе цикла арифметический знак отсутствует");
-                }
-                if (countSign < 1) {    // Проверяем количество арифметических знаков в массиве
-                    System.out.println("Знак присутствует - " + countSign + " раз.");
-                } else if (countSign == 1) {    // Если знак в единственном числе
-                    System.out.println("Знак присутствует - 1 раз.");
                 } else {
-                    System.out.println("Знак присутствует - " + countSign + " раза или более.");
+                    // Если знака нет, продолжаем проверку
+                    continue;
+                }
+                if (countSign < 1) {
+                    // Проверяем количество арифметических знаков в массиве
+                    continue;
+                } else if (countSign == 1) {
+                    // Если знак в единственном числе
+                    continue;
+                } else {
                     throw new Exception("Слишком много арифметических знаков");
                 }
-                System.out.println("Поиск наличия знака закончен.");
             }
             // Начинаем проверку на наличие римских или арабских цифр через отдельный метод
             exampleArraysAfterCheck = findRimOrArab(stringFirst);
-            System.out.println("exampleArraysAfterCheck "+Arrays.toString(exampleArraysAfterCheck));
-            System.out.println(exampleArraysAfterCheck.getClass());
             // Проверяем массив на систему: если арабская - передаем дальше, если римская - переводим в арабскую
             // Запускаем метод проверки
             int[] exampleAfterAOS = checkArrayOnSystem(exampleArraysAfterCheck, inputFromUser);
@@ -82,15 +72,12 @@ public class Main {
     static int[] findRimOrArab(String[] stringFirst) {
         // Создаем массив на 4 значения для передачи значений дальше для решения
         int[] exampleArrays = new int[] {0, 0, 0, 0};
-        System.out.println("Входная строка в массиве - " + Arrays.toString(stringFirst));
         int c = 0;  // Значение арифметического знака: 1+, 2-, 3*, 4/.
         int d = 0;  // Значение системы: 1 - арабские цифры, 2 - римские цифры
         // Цикл определения арифметического знака
         for (String st : stringFirst) {
-            System.out.println("Проверяемый знак из массива - " + st);
             Pattern pattern = Pattern.compile("[+\\-*/]");  // Ищем все арифметические знаки
             boolean findSign = st.matches(String.valueOf(pattern));
-            System.out.println(findSign);
             // Ищем знак
             if (findSign) {
                 switch (st) {
@@ -100,11 +87,9 @@ public class Main {
                     case "/" -> exampleArrays[2] = 4;
                 }
             }
-            System.out.println("Арифметический знак - " + c);
         }
         // Ищем римские цифры
         for (String st : stringFirst) {
-            System.out.println("Проверяемый знак из массива - " + st);
             Pattern patternOtherSigns = Pattern.compile("[^+\\-*/IVX\\d]");  // Ищем все лишние знаки
             boolean findSign = st.matches(String.valueOf(patternOtherSigns));
             try {
@@ -113,22 +98,16 @@ public class Main {
                     throw new Exception("Присутствуют недопустимые символы");
                 } else {
                     // Проверяем на все арабские знаки
-                    System.out.println("Продолжаем проверку строки на арабские цифры и арифметические знаки");
                     Pattern patternArabSigns = Pattern.compile("[+\\-*/\\d]");
                     boolean findArabSign = st.matches(String.valueOf(patternArabSigns));
                     try {
                         if(findArabSign){
-                            System.out.println("Присутствуют только арабские цифры и арифметический знак");
-                            System.out.println("---Проверяем следующий символ");
                             exampleArrays[3] = 1;
                         }else {
-                            System.out.println("В строке присутствуют римские цифры, проверяем массив заново");
                             for (String stRim : stringFirst) {
                                 Pattern patternRimSigns = Pattern.compile("[+\\-*/IVX]");
                                 boolean findRimSign = stRim.matches(String.valueOf(patternRimSigns));
                                 if (findRimSign) {
-                                    System.out.println("Присутствуют только римские цифры и арифметический знак");
-                                    System.out.println("---Проверяем следующий символ");
                                     exampleArrays[3] = 2;
                                 }else {
                                     throw new Exception("Присутствуют арабские и римские цифры");
@@ -143,7 +122,6 @@ public class Main {
                 throw new RuntimeException(e);
             }
         }
-        System.out.println(Arrays.toString(exampleArrays));
         return exampleArrays;
     }
 
@@ -151,25 +129,18 @@ public class Main {
     static int[] checkArrayOnSystem(int[] exampleArraysAfterCheck, String inputFromUser) throws Exception {
         int[] exampleAfterAOS = exampleArraysAfterCheck;
         int signInt = exampleArraysAfterCheck[2];
-        System.out.println(signInt);
         String signString = null;
         if(signInt == 1) signString = "\\+";
         else if(signInt == 2) signString = "-";
         else if(signInt == 3) signString = "\\*";
         else if(signInt == 4) signString = "/";
         try{
-            System.out.println("awdawdawdawdawdawdawddw"+Arrays.toString(exampleArraysAfterCheck));
             String[] arrayOfSummond = inputFromUser.split(signString);
-            System.out.println("arrayOfSummond"+Arrays.toString(arrayOfSummond));
             int check = exampleArraysAfterCheck[3];
             if(check == 1){
-                System.out.println("Используются только арабские цифры, передаем массив дальше");
                 exampleArraysAfterCheck[0] = Integer.parseInt(arrayOfSummond[0]);
                 exampleArraysAfterCheck[1] = Integer.parseInt(arrayOfSummond[1]);
-                System.out.println("Массив в подсчет - "+Arrays.toString(exampleArraysAfterCheck));
             }else if(check == 2){
-                System.out.println("Используются только римские цифры, передаем массив на конвертацию в арабские цифры");
-                System.out.println("Массив римских цифр для конвертации - "+Arrays.toString(arrayOfSummond));
                 // вызов метода конвертации
                 int[] converted = convertRimToArab(arrayOfSummond);
                 exampleArraysAfterCheck[0] = converted[0];
@@ -184,20 +155,15 @@ public class Main {
     // Метод конвертации, получает String массив из двух римских знаков, возвращает int массив из двух чисел
     static int[] convertRimToArab(String[] arrayOfSummond) throws Exception {
         int[] converted = new int[2];
-        System.out.println("Массив в конверторе - "+Arrays.toString(arrayOfSummond));
         String aR = arrayOfSummond[0];
-        System.out.println(aR+aR.getClass());
         converted[0] = convertSymbol(aR);
         String bR = arrayOfSummond[1];
-        System.out.println(bR+bR.getClass());
         converted[1] = convertSymbol(bR);
-        System.out.println("Массив после конвертации - "+Arrays.toString(converted));
         return converted;
     }
 
     // метод конвертации римских чисел до 10
     static int convertSymbol(String stRim) throws Exception {
-        System.out.println("Символ до конвертации - "+stRim);
         switch (stRim) {
             case "I" -> stRim = "1";
             case "II" -> stRim = "2";
@@ -211,17 +177,13 @@ public class Main {
             case "X" -> stRim = "10";
             default -> throw new Exception("Неподходящая цифра");
         }
-        System.out.println("Символ после конвертации - "+stRim);
         return Integer.parseInt(stRim);
     }
 
     // метод подсчета арабских цифр
     static String solutionOfExample(int[] arraysEnd) throws Exception {
-        System.out.println("метод подсчета арабских цифр --- "+Arrays.toString(arraysEnd));
         int a =  arraysEnd[0];
-        System.out.println("a --- "+a);
         int b =  arraysEnd[1];
-        System.out.println("b --- "+b);
         int c =  arraysEnd[2];
         int end = 0;
         if ((a<=10) && (a>=0)){
@@ -239,9 +201,7 @@ public class Main {
 
     // Метод конвертации из арабских в римские числа
     static String convertArabToRim(String preEndSolution){
-        System.out.println("preEndSolution - "+preEndSolution);
         int preConvert = Integer.parseInt(preEndSolution);
-        System.out.println("preConvert в int - "+preConvert);
         String endString = null;
         int remainder = preConvert % 10;
         int predecades = preConvert / 10;
@@ -260,7 +220,6 @@ public class Main {
         else if (predecades == 0) decades = "";
         if (strAM == null) endString = decades;
         else endString = decades + strAM;
-        System.out.println(preConvert+" "+endString+" ");
         return endString;
     }
 
