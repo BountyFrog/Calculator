@@ -89,18 +89,10 @@ public class Main {
             // Ищем знак
             if (findSign) {
                 switch (st) {
-                    case "+" -> {
-                        exampleArrays[2] = 1;
-                    }
-                    case "-" -> {
-                        exampleArrays[2] = 2;
-                    }
-                    case "*" -> {
-                        exampleArrays[2] = 3;
-                    }
-                    case "/" -> {
-                        exampleArrays[2] = 4;
-                    }
+                    case "+" -> exampleArrays[2] = 1;
+                    case "-" -> exampleArrays[2] = 2;
+                    case "*" -> exampleArrays[2] = 3;
+                    case "/" -> exampleArrays[2] = 4;
                 }
             }
             System.out.println("Арифметический знак - " + c);
@@ -186,7 +178,6 @@ public class Main {
             exampleArraysAfterCheck[0] = converted[0];
             exampleArraysAfterCheck[1] = converted[1];
         }
-
         return exampleAfterAOS;
     }
 
@@ -194,14 +185,12 @@ public class Main {
     static int[] convertRimToArab(String[] arrayOfSummond) throws Exception {
         int[] converted = new int[2];
         System.out.println("Массив в конверторе - "+Arrays.toString(arrayOfSummond));
-
         String aR = arrayOfSummond[0];
         System.out.println(aR+aR.getClass());
         converted[0] = convertSymbol(aR);
         String bR = arrayOfSummond[1];
         System.out.println(bR+bR.getClass());
         converted[1] = convertSymbol(bR);
-
         System.out.println("Массив после конвертации - "+Arrays.toString(converted));
         return converted;
     }
@@ -234,18 +223,10 @@ public class Main {
         int c =  arraysEnd[2];
         int end = 0;
         switch (c) {
-            case 1 -> {
-                end = a+b;
-            }
-            case 2 -> {
-                end = a-b;
-            }
-            case 3 -> {
-                end = a*b;
-            }
-            case 4 -> {
-                end = a/b;
-            }
+            case 1 -> end = a+b;
+            case 2 -> end = a-b;
+            case 3 -> end = a*b;
+            case 4 -> end = a/b;
         }
         return Integer.toString(end);
     }
@@ -293,73 +274,3 @@ public class Main {
         return beforeTen;
     }
 }
-
-// получаем массив чисел int из строки и знака с присвоением ему числа int
-// [слагаемое, слагаемое, знак]
-//    static int[] findSummands(String inputExample){
-//        String[] arraySummands = inputExample.split("\\D");
-//        int a = Integer.parseInt(arraySummands[0]);
-//        int b = Integer.parseInt(arraySummands[1]);
-//        String[] arraySign = inputExample.split("\\d*");
-//        String str = arraySign[2];
-//        int c = 0;
-//        switch (str) {
-//            case "+" -> {
-//                c = 1;
-//            }
-//            case "-" -> {
-//                c = 2;
-//            }
-//            case "*" -> {
-//                c = 3;
-//            }
-//            case "/" -> {
-//                c = 4;
-//            }
-//        }
-//        int[] storage = {a, b, c};
-//        return storage;
-//    }
-
-//        try{
-//            int numOfChar = stringFirst.length;
-//            System.out.println("Длина массива "+numOfChar);
-//
-//            if((numOfChar >= 3) && (numOfChar <= 5)){
-//                System.out.println("Достаточно знаков");
-//            }
-//            else {
-//                throw new Exception("Слишком много или слишком мало символов");
-//            }
-//            int countSign = 0;
-//            for (String st : stringFirst) {
-//                System.out.println(st);
-//                Pattern pattern = Pattern.compile("[+\\-*/]");
-//                boolean findSign = st.matches(String.valueOf(pattern));
-//                System.out.println(findSign);
-//                System.out.println("awdawdawd"+findSign);
-//                if(findSign){
-//                    countSign++;
-//                    System.out.println("count - "+countSign);
-//                }
-//                else {
-//                    System.out.println("Знак на этом этапе цикла отсутствует");
-//                }
-//                if(countSign < 1){
-//                    System.out.println("Знак присутствует - "+countSign+" раз.");
-//                }
-//                else if(countSign == 1){
-//                    System.out.println("Знак присутствует - 1 раз.");
-//                }
-//                else{
-//                    System.out.println("Знак присутствует - "+countSign+" раз(а).");
-//                    throw new Exception("Слишком много арифметических знаков");
-//                }
-//            }
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        System.out.println("Проверка пройдена");
-//        return inputFromUser;
-//    }
-
